@@ -7,7 +7,7 @@ interface NavItemProps {
 function NavItem({ title, url }: NavItemProps) {
   return (
     <Link href={url}>
-      <div className="text-mydark1 dark:text-white cursor-pointer">{title}</div>
+      <span className="cursor-pointer font-bold">{title}</span>
     </Link>
   );
 }

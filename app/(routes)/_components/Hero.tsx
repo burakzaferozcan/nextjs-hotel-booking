@@ -42,8 +42,8 @@ function Hero() {
             );
           })}
         </CarouselContent>
-        <CarouselPrevious className="left-0" />
-        <CarouselNext className="right-0" />
+        <CarouselPrevious className="hidden lg:flex left-1" />
+        <CarouselNext className="hidden lg:flex right-1" />
       </Carousel>
       <HeroForm />
     </div>

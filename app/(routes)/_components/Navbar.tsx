@@ -1,7 +1,7 @@
 "use client";
 import { ModeToggle } from "@/components/ModeToggle";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import UserToggle from "./UserToggle";
 import MobileMenu from "./MobileMenu";
 import { NavMenu } from "@/constants";
@@ -10,11 +10,29 @@ import { usePathname } from "next/navigation";
 
 function Navbar() {
   const pathname = usePathname();
+  const [isScroolled, setIsScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
     <div
-      className={`w-full z-20 items-center ${
-        pathname != "/" ? "bg-mydark2 " : "fixed"
-      } `}
+      className={`w-full z-30 items-center ${
+        pathname != "/"
+          ? "bg-mydark2"
+          : isScroolled
+          ? "bg-mydark2"
+          : "bg-transparent"
+      } fixed`}
     >
       <div className="container">
         <div className="px-4 py-6 flex flex-row items-center justify-center">
@@ -27,7 +45,7 @@ function Navbar() {
               className="w-full"
             />
           </div>
-          <div className="flex-row lg:flex hidden items-center gap-9 ml-auto">
+          <div className="flex-row lg:flex hidden items-center gap-9 ml-auto ">
             {NavMenu.map((item, index) => (
               <NavItem key={index} title={item.title} url={item.url} />
             ))}
