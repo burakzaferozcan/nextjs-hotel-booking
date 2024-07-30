@@ -1,4 +1,4 @@
-export const apiImagesUrl = "https://check-facing.pockethost.io/api/files/";
+export const apiImagesUrl = "https://hotel-bookings.pockethost.io/api/files/";
 
 export const NavMenu = [
   {

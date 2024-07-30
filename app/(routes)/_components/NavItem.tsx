@@ -7,7 +7,7 @@ interface NavItemProps {
 function NavItem({ title, url }: NavItemProps) {
   return (
     <Link href={url}>
-      <span className="cursor-pointer font-bold">{title}</span>
+      <span className="cursor-pointer font-bold lg:text-white">{title}</span>
     </Link>
   );
 }

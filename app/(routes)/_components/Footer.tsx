@@ -1,11 +1,28 @@
 import ImageVawes from "@/components/ImageVawes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PhoneIcon } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Hotel } from "@/types/types";
 import Image from "next/image";
 import React from "react";
+interface FooterProps {
+  data: Hotel;
+  loading: boolean;
+}
+function Footer({ data, loading }: FooterProps) {
+  if (loading || (!loading && data.length === 0)) {
+    return (
+      <div className="relative text-white">
+        <div className="z-10 absolute inset-0">
+          <ImageVawes myclassname="absolute -top-5 transform rotate-180" />
+          <div className="z-20 relative h-96">
+            <Skeleton className="h-full w-full bg-slate-600" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-function Footer() {
   return (
     <div className="relative text-white">
       <div className="z-10 absolute inset-0">
@@ -23,10 +40,7 @@ function Footer() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold">Subcribe newsletter</h2>
             <p className="text-gray-400 mt-2">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Architecto quas id quidem. Nulla obcaecati quasi modi. Culpa ad
-              mollitia illum impedit, minus perferendis doloribus? Iusto
-              voluptas molestiae nihil nostrum ab.
+              {data.summary.replace(/<\/?[^>]+(>|$)/g, "")}
             </p>
             <div className="mt-4 flex justify-center ml-auto">
               <Input
@@ -98,9 +112,9 @@ function Footer() {
             <div>
               <h3 className="text-xl font-bold mb-4">Contact</h3>
               <p className="text-gray-400 space-y-2">
-                <span className="block"> Turkey Istanbul</span>
-                <span className="block"> +90 555 555 5555 Istanbul</span>
-                <span className="block">ozcanburakzafer@gmail.com</span>
+                <span className="block"> {data.location}</span>
+                <span className="block"> {data.contact_phone}</span>
+                <span className="block">{data.contact_email}</span>
               </p>
             </div>
           </div>

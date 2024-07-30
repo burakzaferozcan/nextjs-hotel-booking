@@ -43,9 +43,7 @@ const formSchema = z.object({
   adults: z.string().nonempty({ message: "Select number of adults" }),
   children: z.string().nonempty({ message: "Select number of children" }),
 });
-function onSubmit(data: z.infer<typeof formSchema>) {
-  console.log(data);
-}
+
 function HeroForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,6 +54,9 @@ function HeroForm() {
       children: "0",
     },
   });
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log(data);
+  }
   return (
     <div className="absolute -bottom-28 lg:bottom-[-190px] w-full flex justify-center">
       <div className="mx-auto container justify-center flex">
