@@ -1,4 +1,5 @@
 "use client";
+
 import { UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,10 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
-function UserToggle() {
+
+const UserToogle = () => {
   const [user, setUser] = useState(null);
   const router = useRouter();
+
   useEffect(() => {
     const fetchUser = async () => {
       const authData = localStorage.getItem("pocketbase_auth");
@@ -25,27 +27,26 @@ function UserToggle() {
     };
     fetchUser();
   }, []);
+
   return (
     <div>
       {user ? (
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex text-white text-xs justify-center items-center dark:text-white">
-            <UserIcon className="text-white dark:text-white" />
-            {user.username}
+          <DropdownMenuTrigger className="flex text-white text-xs justify-center items-center">
+            <UserIcon className="text-white dark:text-white" /> {user.username}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <Link href="/my-reservation">
+              <DropdownMenuItem>My Reservation</DropdownMenuItem>
+            </Link>
             <DropdownMenuItem
               onClick={() => {
                 localStorage.removeItem("pocketbase_auth");
                 setUser(null);
-                toast({
-                  variant: "success",
-                  title: "Logout Successfully",
-                  duration: 2000,
-                });
+                router.refresh();
+                router.push("/");
               }}
             >
               Logout
@@ -53,12 +54,12 @@ function UserToggle() {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <Link href={"/auth/login"}>
+        <Link href="/auth/login">
           <UserIcon className="text-white dark:text-white" />
         </Link>
       )}
     </div>
   );
-}
+};
 
-export default UserToggle;
+export default UserToogle;

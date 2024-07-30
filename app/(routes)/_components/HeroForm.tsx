@@ -21,10 +21,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-
 import {
   Select,
   SelectContent,
@@ -32,19 +31,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
-const formSchema = z.object({
-  arrivalDate: z
-    .date()
-    .refine((date) => !!date, { message: "Arrival date is required" }),
-  departureDate: z
-    .date()
-    .refine((date) => !!date, { message: "Departure date is required" }),
-  adults: z.string().nonempty({ message: "Select number of adults" }),
-  children: z.string().nonempty({ message: "Select number of children" }),
-});
+const today = new Date();
+today.setHours(0, 0, 0, 0);
 
-function HeroForm() {
+const formSchema = z
+  .object({
+    arrivalDate: z
+      .date()
+      .min(today, { message: "Arrival date must be after today." }),
+    departureDate: z
+      .date()
+      .min(today, { message: "Departure date must be after today." }),
+    adults: z.string().nonempty({ message: "Select number of adults" }),
+    children: z.string().nonempty({ message: "Select number of children" }),
+  })
+  .refine((data) => data.arrivalDate < data.departureDate, {
+    message: "Arrival date must be before departure date",
+    path: ["departureDate"],
+  });
+
+const HeroForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,9 +63,19 @@ function HeroForm() {
       children: "0",
     },
   });
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
-  }
+
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    const { arrivalDate, departureDate, adults, children } = data;
+    const query = new URLSearchParams({
+      arrivalDate: format(arrivalDate, "yyyy-MM-dd"),
+      departureDate: format(departureDate, "yyyy-MM-dd"),
+      adults: adults.toString(),
+      children: children.toString(),
+    });
+
+    router.push(`/search-rooms?${query}`);
+  };
+
   return (
     <div className="absolute -bottom-28 lg:bottom-[-190px] w-full flex justify-center">
       <div className="mx-auto container justify-center flex">
@@ -102,7 +121,6 @@ function HeroForm() {
                         </PopoverContent>
                       </Popover>
                     </FormControl>
-
                     <FormMessage className="validationError" />
                   </FormItem>
                 )}
@@ -143,7 +161,6 @@ function HeroForm() {
                         </PopoverContent>
                       </Popover>
                     </FormControl>
-
                     <FormMessage className="validationError" />
                   </FormItem>
                 )}
@@ -159,8 +176,8 @@ function HeroForm() {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Adult" />
+                        <SelectTrigger className="w-full]">
+                          <SelectValue placeholder="Adults" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="1">1</SelectItem>
@@ -169,14 +186,9 @@ function HeroForm() {
                           <SelectItem value="4">4</SelectItem>
                           <SelectItem value="5">5</SelectItem>
                           <SelectItem value="6">6</SelectItem>
-                          <SelectItem value="7">7</SelectItem>
-                          <SelectItem value="8">8</SelectItem>
-                          <SelectItem value="9">9</SelectItem>
-                          <SelectItem value="10">10</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
-
                     <FormMessage className="validationError" />
                   </FormItem>
                 )}
@@ -192,8 +204,8 @@ function HeroForm() {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Children" />
+                        <SelectTrigger className="w-full]">
+                          <SelectValue placeholder="Adults" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="0">0</SelectItem>
@@ -203,14 +215,9 @@ function HeroForm() {
                           <SelectItem value="4">4</SelectItem>
                           <SelectItem value="5">5</SelectItem>
                           <SelectItem value="6">6</SelectItem>
-                          <SelectItem value="7">7</SelectItem>
-                          <SelectItem value="8">8</SelectItem>
-                          <SelectItem value="9">9</SelectItem>
-                          <SelectItem value="10">10</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
-
                     <FormMessage className="validationError" />
                   </FormItem>
                 )}
@@ -228,6 +235,6 @@ function HeroForm() {
       </div>
     </div>
   );
-}
+};
 
 export default HeroForm;
